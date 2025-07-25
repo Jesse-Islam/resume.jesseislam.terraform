@@ -1,3 +1,7 @@
+# 1) Tell Cloud Build to use only Cloud Logging (no bucket needed)
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
 - name: 'hashicorp/terraform:latest'
   id: 'tf-init'
