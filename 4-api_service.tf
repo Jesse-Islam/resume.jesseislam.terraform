@@ -1,5 +1,10 @@
 #cloud trigger that builds image
 
+variable "app_installation_id" {
+  description = "GitHub App installation ID"
+  type        = number
+}
+data "google_project" "current" {}
 
 # Artifact Registry repo for your Python image
 resource "google_artifact_registry_repository" "python_service" {
@@ -8,7 +13,7 @@ resource "google_artifact_registry_repository" "python_service" {
   location      = var.region
 }
 
-resource "google_secret_manager_secret" "github-token-secret" {
+resource "google_secret_manager_secret" "github_token" {
   secret_id = "github-token-secret"
 
   replication {
@@ -16,32 +21,34 @@ resource "google_secret_manager_secret" "github-token-secret" {
   }
 }
 
-resource "google_secret_manager_secret_version" "github_token_secret_version" {
-  secret      = google_secret_manager_secret.github_token_secret.id
+resource "google_secret_manager_secret_version" "github_token_version" {
+  secret      = google_secret_manager_secret.github_token.name
   secret_data = var.github_pat
 }
 
-data "google_iam_policy" "p4sa-secretAccessor" {
+data "google_iam_policy" "p4sa_secret_accessor" {
   binding {
-    role = "roles/secretmanager.secretAccessor"
-    // Here, 123456789 is the Google Cloud project number for the project that contains the connection.
-    members = ["serviceAccount:service-${data.google_project.current.number}@gcp-sa-apigateway.iam.gserviceaccount.com"]
+    role    = "roles/secretmanager.secretAccessor"
+    members = [
+      "serviceAccount:service-${data.google_project.current.number}@gcp-sa-apigateway.iam.gserviceaccount.com"
+    ]
   }
 }
 
-resource "google_secret_manager_secret_iam_policy" "policy" {
-  secret_id = google_secret_manager_secret.github-token-secret.secret_id
-  policy_data = data.google_iam_policy.p4sa-secretAccessor.policy_data
+resource "google_secret_manager_secret_iam_policy" "github_token_policy" {
+  secret_id   = google_secret_manager_secret.github_token.secret_id
+  policy_data = data.google_iam_policy.p4sa_secret_accessor.policy_data
 }
 
-resource "google_cloudbuildv2_connection" "my-connection" {
+resource "google_cloudbuildv2_connection" "my_connection" {
   location = "us-central1"
-  name = "my-connection"
+  name     = "my-connection"
 
   github_config {
-    app_installation_id = 123123
+    app_installation_id = var.app_installation_id
+
     authorizer_credential {
-      oauth_token_secret_version = google_secret_manager_secret_version.github-token-secret-version.id
+      oauth_token_secret_version = google_secret_manager_secret_version.github_token_version.name
     }
   }
 }
