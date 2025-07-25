@@ -2,19 +2,19 @@
 
 
 # Artifact Registry repo for your Python image
-#resource "google_artifact_registry_repository" "python_service" {
-#  repository_id = "python-service"
-#  format        = "DOCKER"
-#  location      = var.region
-#}
+resource "google_artifact_registry_repository" "python_service" {
+  repository_id = "python-service"
+  format        = "DOCKER"
+  location      = var.region
+}
 
-#resource "google_secret_manager_secret" "github_token" {
-#  secret_id = "github-token-secret"
-#
-#  replication {
-#    auto {}
-#  }
-#}
+resource "google_secret_manager_secret" "github_token" {
+  secret_id = "github-token-secret"
+
+  replication {
+    auto {}
+  }
+}
 
 resource "google_secret_manager_secret_version" "github_token_version" {
   secret      = google_secret_manager_secret.github_token.name
@@ -56,10 +56,10 @@ resource "google_cloudbuildv2_repository" "my-repository" {
 }
 
 #set up service account for cloud runs
-#resource "google_service_account" "cloud_run_sa" {
-#  account_id   = "cloud-run-sa"
-#  display_name = "Cloud Run runtime SA"
-#}
+resource "google_service_account" "cloud_run_sa" {
+  account_id   = "cloud-run-sa"
+  display_name = "Cloud Run runtime SA"
+}
 
 resource "google_project_iam_member" "firestore_access" {
   project = var.project_id

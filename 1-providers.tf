@@ -16,6 +16,12 @@ terraform {
       version = ">= 5.0.0"
     }
   }
+  backend "gcs" {
+    # replace with a bucket name you control
+    bucket = "double-genius-terraform-state"
+    # any path prefix inside the bucket
+    prefix = "resume-backend"
+  }
 }
 
 # Default (GA) provider config
