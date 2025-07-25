@@ -13,8 +13,26 @@ availableSecrets:
   secretManager:
     - versionName: "projects/$PROJECT_ID/secrets/github-pat/versions/latest"
       env: "GITHUB_PAT"
+
 steps:
-  - name: hashicorp/terraform:latest
+  # ─────────────────────────────────────────────────────────────
+  # 1) Terraform Init
+  - id: tf-init
+    name: "hashicorp/terraform:latest"
+    secretEnv: ["GITHUB_PAT"]
+    env:
+      # inject your PAT and App ID as TF_VARs
+      - "TF_VAR_github_pat=$$GITHUB_PAT"
+      - "TF_VAR_app_installation_id=$_APP_INSTALLATION_ID"
+    # disable interactive prompts
     args: ["init","-input=false"]
-  - name: hashicorp/terraform:latest
+
+  # ─────────────────────────────────────────────────────────────
+  # 2) Terraform Apply
+  - id: tf-apply
+    name: "hashicorp/terraform:latest"
+    secretEnv: ["GITHUB_PAT"]
+    env:
+      - "TF_VAR_github_pat=$$GITHUB_PAT"
+      - "TF_VAR_app_installation_id=$_APP_INSTALLATION_ID"
     args: ["apply","-auto-approve","-input=false"]
