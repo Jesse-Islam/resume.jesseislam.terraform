@@ -11,3 +11,8 @@ variable "github_pat" {
   type        = string
   sensitive   = true
 }
+
+variable "app_installation_id" {
+  description = "GitHub App installation ID"
+  type        = number
+}
