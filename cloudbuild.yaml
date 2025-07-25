@@ -1,9 +1,5 @@
-options:
-  logging: CLOUD_LOGGING_ONLY
-
 steps:
-# --- Terraform Init & Apply ---
-- name: 'gcr.io/cloud-builders/terraform'
+- name: 'hashicorp/terraform:latest'
   id: 'tf-init'
   entrypoint: 'bash'
   args:
@@ -11,8 +7,7 @@ steps:
     - |
       cd terraform
       terraform init
-
-- name: 'gcr.io/cloud-builders/terraform'
+- name: 'hashicorp/terraform:latest'
   id: 'tf-apply'
   entrypoint: 'bash'
   args:
