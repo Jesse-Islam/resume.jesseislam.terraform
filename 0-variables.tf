@@ -6,3 +6,8 @@ variable "region" {
   type    = string
   default = "us-central1"
 }
+variable "github_pat" {
+  description = "GitHub PAT for creating the secret version"
+  type        = string
+  sensitive   = true
+}
