@@ -1,10 +1,5 @@
 #cloud trigger that builds image
 
-variable "app_installation_id" {
-  description = "GitHub App installation ID"
-  type        = number
-}
-
 
 # Artifact Registry repo for your Python image
 resource "google_artifact_registry_repository" "python_service" {
