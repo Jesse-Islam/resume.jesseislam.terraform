@@ -37,7 +37,7 @@ resource "google_secret_manager_secret_iam_policy" "github_token_policy" {
 
 resource "google_cloudbuildv2_connection" "my_connection" {
   location = "us-central1"
-  name     = "my-connection"
+  name     = "my_connection"
 
   github_config {
     app_installation_id = var.app_installation_id
@@ -51,7 +51,7 @@ resource "google_cloudbuildv2_connection" "my_connection" {
 resource "google_cloudbuildv2_repository" "my-repository" {
   location = "us-central1"
   name = "resume.jesseislam.com.backend"
-  parent_connection = google_cloudbuildv2_connection.my-connection.name
+  parent_connection = google_cloudbuildv2_connection.my_connection.name
   remote_uri = "https://github.com/Jesse-Islam/resume.jesseislam.com.backend.git"
 }
 
