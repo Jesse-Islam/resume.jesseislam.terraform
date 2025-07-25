@@ -1,21 +1,55 @@
 # 1) Tell Cloud Build to use only Cloud Logging (no bucket needed)
 options:
   logging: CLOUD_LOGGING_ONLY
+# cloudbuild.yaml
 
 steps:
-- name: 'hashicorp/terraform:latest'
-  id: 'tf-init'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      cd terraform
-      terraform init
-- name: 'hashicorp/terraform:latest'
-  id: 'tf-apply'
-  entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      cd terraform
-      terraform apply -auto-approve
+  # 1) Terraform Init
+  - id: tf-init
+    name: "hashicorp/terraform:latest"
+    # run inside the terraform folder
+    dir: "terraform"
+    # Terraform’s ENTRYPOINT is already "terraform", so args map to "terraform init"
+    args:
+      - "init"
+
+  # 2) Terraform Apply
+  - id: tf-apply
+    name: "hashicorp/terraform:latest"
+    dir: "terraform"
+    args:
+      - "apply"
+      - "-auto-approve"
+
+  # 3) Build your Docker image
+  - id: docker-build
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA"
+      - "."
+
+  # 4) Push the image
+  - id: docker-push
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA"
+
+  # 5) Deploy to Cloud Run
+  - id: run-deploy
+    name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        gcloud run deploy python-service-649439655037 \
+          --image gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA \
+          --region us-central1 \
+          --platform managed \
+          --project double-genius-466920-b8 \
+          --allow-unauthenticated
+
+images:
+  - "gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA"
