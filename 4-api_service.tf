@@ -35,25 +35,7 @@ resource "google_secret_manager_secret_iam_policy" "github_token_policy" {
   policy_data = data.google_iam_policy.p4sa_secret_accessor.policy_data
 }
 
-resource "google_cloudbuildv2_connection" "my_connection" {
-  location = "us-central1"
-  name     = "my_connection"
 
-  github_config {
-    app_installation_id = var.app_installation_id
-
-    authorizer_credential {
-      oauth_token_secret_version = google_secret_manager_secret_version.github_token_version.name
-    }
-  }
-}
-
-resource "google_cloudbuildv2_repository" "my-repository" {
-  location = "us-central1"
-  name = "resume.jesseislam.com.backend"
-  parent_connection = google_cloudbuildv2_connection.my_connection.name
-  remote_uri = "https://github.com/Jesse-Islam/resume.jesseislam.com.backend.git"
-}
 
 #set up service account for cloud runs
 resource "google_service_account" "cloud_run_sa" {
