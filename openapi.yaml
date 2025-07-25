@@ -1,0 +1,31 @@
+swagger: '2.0'
+info:
+  title: counterapi
+  description: post API on API Gateway with a Cloud Run backend
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /viewcount:
+    post:
+      summary: CloudRun View count
+      operationId: viewcount
+      x-google-backend:
+        address: https://python-service-649439655037.us-central1.run.app/
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+    options:
+      description: "Cors associated request"
+      operationId: corsRequest
+      x-google-backend:
+        address: https://python-service-649439655037.us-central1.run.app/
+      responses:
+        '200':
+          description: "Allow"
+        '401':
+          description: "Cors not allowed"

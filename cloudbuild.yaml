@@ -1,0 +1,22 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+# --- Terraform Init & Apply ---
+- name: 'gcr.io/cloud-builders/terraform'
+  id: 'tf-init'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      cd terraform
+      terraform init
+
+- name: 'gcr.io/cloud-builders/terraform'
+  id: 'tf-apply'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      cd terraform
+      terraform apply -auto-approve
