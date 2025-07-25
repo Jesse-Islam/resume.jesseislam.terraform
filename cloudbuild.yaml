@@ -1,27 +1,21 @@
-# 1) Tell Cloud Build to use only Cloud Logging (no bucket needed)
-options:
-  logging: CLOUD_LOGGING_ONLY
 # cloudbuild.yaml
 
+options:
+  logging: CLOUD_LOGGING_ONLY       # satisfy custom-SA → logging requirement
+
 steps:
-  # 1) Terraform Init
+  # 1) terraform init (in root, where your .tf files are)
   - id: tf-init
     name: "hashicorp/terraform:latest"
-    # run inside the terraform folder
-    dir: "terraform"
-    # Terraform’s ENTRYPOINT is already "terraform", so args map to "terraform init"
-    args:
-      - "init"
+    # removed dir: , so defaults to /workspace
+    args: ["init"]
 
-  # 2) Terraform Apply
+  # 2) terraform apply
   - id: tf-apply
     name: "hashicorp/terraform:latest"
-    dir: "terraform"
-    args:
-      - "apply"
-      - "-auto-approve"
+    args: ["apply", "-auto-approve"]
 
-  # 3) Build your Docker image
+  # 3) build & push your container
   - id: docker-build
     name: "gcr.io/cloud-builders/docker"
     args:
@@ -30,14 +24,13 @@ steps:
       - "gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA"
       - "."
 
-  # 4) Push the image
   - id: docker-push
     name: "gcr.io/cloud-builders/docker"
     args:
       - "push"
       - "gcr.io/$PROJECT_ID/resume-backend:$SHORT_SHA"
 
-  # 5) Deploy to Cloud Run
+  # 4) deploy to Cloud Run
   - id: run-deploy
     name: "gcr.io/cloud-builders/gcloud"
     entrypoint: "bash"
