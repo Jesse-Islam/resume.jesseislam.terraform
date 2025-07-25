@@ -1,12 +1,5 @@
 #cloud trigger that builds image
-variable "project_id" {
-  type    = string
-  default = "double-genius-466920-b8"
-}
-variable "region" {
-  type    = string
-  default = "us-central1"
-}
+
 
 # Artifact Registry repo for your Python image
 resource "google_artifact_registry_repository" "python_service" {
