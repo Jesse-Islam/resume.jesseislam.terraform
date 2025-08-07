@@ -2,9 +2,10 @@
 
 This repository contains all of the Terraform code and CI/CD configuration to provision and manage the **backend** infrastructure for [resume.jesseislam.com](https://resume.jesseislam.com).  Everything—from state storage to API Gateway, Firestore, and Cloud Run—is defined here as code.
 
+<img width="3840" height="1716" alt="Image" src="https://github.com/user-attachments/assets/8677f884-1e78-476f-ad30-61b3c000fe63" />
 ---
 
-## 🚀 What’s in here
+## What’s in here
 
 - **CI/CD pipeline** via Cloud Build  
   - Runs unit tests (pytest)  
@@ -22,7 +23,7 @@ This repository contains all of the Terraform code and CI/CD configuration to pr
 
 ---
 
-## ⚙️ Prerequisites
+##  Prerequisites
 
 1. **Google Cloud SDK** installed and authenticated.  
 2. **Terraform** >= 1.1.0.  
