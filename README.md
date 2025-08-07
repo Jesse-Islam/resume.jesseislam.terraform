@@ -31,3 +31,10 @@ This repository contains all of the Terraform code and CI/CD configuration to pr
 4. A **GitHub App** installation on your resume repo, and a **PAT** with `repo` scope.  
 5. A GCS bucket for Terraform state (e.g. `gs://double-genius-terraform-state`).  
 
+## Purpose
+
+- https://github.com/Jesse-Islam/resume.jesseislam.terraform
+- https://github.com/Jesse-Islam/resume.jesseislam.com.backend
+- https://github.com/Jesse-Islam/resume.jesseislam.com.frontend
+
+These three repositories automatically update the different components that go into https://resume.jesseislam.com
